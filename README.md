@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ตัวอย่าง Next.js: นักศึกษาและบทความ
 
-## Getting Started
+โปรเจกต์ตัวอย่าง Next.js App Router ที่ประกอบด้วยฟอร์มเพิ่มข้อมูลนักศึกษา
+ซึ่งตรวจสอบข้อมูลด้วย Zod และบันทึกลง SQLite ผ่าน Prisma รวมถึงหน้าบทความ
+ที่โหลดข้อมูลจาก API พร้อม Suspense, Skeleton และหน้า 404
 
-First, run the development server:
+## ความต้องการก่อนติดตั้ง
+
+- Node.js 20.9 ขึ้นไป
+- npm
+
+ตรวจสอบเวอร์ชันที่ติดตั้งได้ด้วย:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+node --version
+npm --version
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ติดตั้งและเริ่มใช้งาน
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+เปิด Terminal ในโฟลเดอร์โปรเจกต์ แล้วรัน:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run db:generate
+npm run db:push
+npm run dev
+```
 
-## Learn More
+เปิด [http://localhost:3000](http://localhost:3000) ในเบราว์เซอร์
 
-To learn more about Next.js, take a look at the following resources:
+Prisma ใช้ SQLite โดยเก็บฐานข้อมูลไว้ที่ `prisma/dev.db` ซึ่งสร้างในเครื่อง
+อัตโนมัติและไม่ถูกรวมใน Git
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### เมื่อแก้ไข Prisma schema
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+หลังแก้ไข `prisma/schema.prisma` ให้สร้าง Prisma Client และปรับฐานข้อมูล:
 
-## Deploy on Vercel
+```bash
+npm run db:generate
+npm run db:push
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+หาก Prisma แจ้ง `EPERM` ระหว่างสร้าง Client บน Windows ให้หยุด dev server
+ที่กำลังทำงานอยู่แล้วลอง `npm run db:generate` อีกครั้ง
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## หน้าต่าง ๆ ในโปรเจกต์
+
+- `/` หน้าแรกและลิงก์ไปยังตัวอย่างต่าง ๆ
+- `/students` แสดงรายชื่อนักศึกษาจากฐานข้อมูล
+- `/students/create` เพิ่มนักศึกษา โดยตรวจสอบข้อมูลฝั่งเซิร์ฟเวอร์ด้วย Zod
+- `/blogs` แสดงบทความจาก `https://api.vercel.app/blog` พร้อม Suspense และ Skeleton
+- `/blogs/[id]` แสดงรายละเอียดบทความ หรือหน้า 404 เมื่อไม่พบข้อมูล
+- `/skeleton` แสดงตัวอย่าง Skeleton
+
+## คำสั่งที่ใช้บ่อย
+
+| คำสั่ง | รายละเอียด |
+| --- | --- |
+| `npm run dev` | เริ่มเซิร์ฟเวอร์สำหรับพัฒนา |
+| `npm run lint` | ตรวจสอบโค้ดด้วย ESLint |
+| `npm run build` | สร้าง production build |
+| `npm run start` | รัน production build |
+| `npm run db:generate` | สร้าง Prisma Client |
+| `npm run db:push` | ปรับฐานข้อมูลให้ตรงกับ Prisma schema |
